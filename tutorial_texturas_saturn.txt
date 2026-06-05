@@ -1,0 +1,155 @@
+https://segaxtreme.net/threads/lets-replace-sega-saturn-graphics.25295/
+
+================================================================================
+PASSO A PASSO COMPLETO: SUBSTITUIÇÃO DE GRÁFICOS NO SEGA SATURN (VDP1)
+Baseado no guia clássico de Malenko (SegaXtreme)
+================================================================================
+
+Este guia ensina a técnica para substituir gráficos não-comprimidos que rodam 
+diretamente na VRAM do chip de vídeo VDP1 do Sega Saturn (sprites, texturas 3D 
+e elementos de menus/telas fixas).
+
+--------------------------------------------------------------------------------
+🛠️ 1. FERRAMENTAS NECESSÁRIAS
+--------------------------------------------------------------------------------
+Prepare uma pasta no seu computador com os seguintes programas:
+1. Yaba Sanshiro 2 (ou uoYabause) - Emulador com ferramentas de depuração (Debug).
+2. Sega Saturn Patcher (SSP) - Para extrair e reconstruir a ISO do jogo.
+3. Crystal Tile 2 - Editor de ficheiros gráficos e tiles.
+4. ByteSearch 1.2 (ou utilitário BiteHex) - Para localizar dados dentro da ISO.
+5. CRAM2PAL - Utilitário para converter paletas de cores do Saturn 
+   (Requer a instalação prévia do .NET Core 3.1 no Windows).
+6. Editor Hexadecimal - Ex: wxMEdit, HxD ou similar.
+7. Editor de Imagem - Ex: Adobe Photoshop ou GIMP (gratuito).
+
+--------------------------------------------------------------------------------
+📂 2. ORGANIZAÇÃO DE PASTAS (RECOMENDADO)
+--------------------------------------------------------------------------------
+Crie uma pasta principal para o seu projeto e, dentro dela, as seguintes subpastas:
+* \Vanilla ISO\    -> Guarda a cópia original do jogo (.bin/.cue ou .iso).
+* \Vanilla Files\  -> Onde serão extraídos todos os ficheiros de dentro da ISO original.
+* \Dumps\          -> Onde irá guardar os dumps de memória do emulador e paletas.
+* \Edited Files\   -> Onde guardará os ficheiros que você modificou.
+* \Edited ISO\     -> Destino final para a nova ISO modificada pronta para jogar.
+
+--------------------------------------------------------------------------------
+🕹️ PASSO 1: EXTRAIR A ISO ORIGINAL
+--------------------------------------------------------------------------------
+1. Abra o Sega Saturn Patcher (SSP).
+2. Carregue a ISO original que está na pasta \Vanilla ISO\.
+3. Utilize a opção de extração para extrair todos os ficheiros do jogo diretamente 
+   para a sua pasta \Vanilla Files\.
+
+--------------------------------------------------------------------------------
+🔎 PASSO 2: ENCONTRAR O ENDEREÇO E TAMANHO DA TEXTURA NA MEMÓRIA
+--------------------------------------------------------------------------------
+1. Abra o jogo no emulador Yaba Sanshiro 2 e jogue até chegar à tela exata onde 
+   o gráfico que quer modificar aparece (ex: tela de opções, menu, etc.).
+2. Com o gráfico visível no ecrã, aceda ao menu superior: Debug -> VDP1.
+3. Navegue pela lista de comandos de textura do VDP1 até encontrar visualmente a 
+   sua imagem na janela de pré-visualização (preview).
+4. ANOTE COM ATENÇÃO os seguintes dados que o Debugger apresenta:
+   * A largura (Width) e altura (Height) em pixels (Exemplo do tutorial: 64x16).
+   * O formato de cor em BPP (Exemplo do tutorial: 4 BPP).
+   * O "Texture Address" (o deslocamento/offset, Exemplo do tutorial: 669A0).
+
+--------------------------------------------------------------------------------
+🎨 PASSO 3: EXTRAIR A PALETA DE CORES (CRAM)
+--------------------------------------------------------------------------------
+Consolas antigas não guardam cores nas imagens; utilizam uma tabela chamada paleta.
+1. Feche a janela do VDP1 e, no menu do emulador, abra: Debug -> Memory Editor.
+2. Clique no separador (tab) VDP2 CRAM.
+3. Clique no botão "Save Tab" abaixo e guarde o ficheiro com o nome 
+   "PaletaOriginalCRAM.bin" dentro da sua pasta \Dumps\.
+4. No Windows, pegue neste ficheiro .bin gerado e arraste-o diretamente para cima 
+   do executável do programa CRAM2PAL.exe.
+5. Uma janela rápida de comandos abrirá e fechará. O programa criará centenas de 
+   ficheiros .pal na mesma pasta. Geralmente, a paleta correta do menu estará 
+   entre as primeiras (ex: o ficheiro _1.pal ou _2.pal).
+
+--------------------------------------------------------------------------------
+💾 PASSO 4: FAZER O DUMP DA TEXTURA DA MEMÓRIA
+--------------------------------------------------------------------------------
+Agora faremos a matemática explicada anteriormente para extrair o bloco exato:
+1. CALCULAR O ENDEREÇO INICIAL: A memória VRAM do VDP1 começa sempre em 05C00000. 
+   Some este valor ao "Texture Address" anotado no Passo 2.
+   -> Conta: 5C00000 + 669A0 = 5C669A0 (Este é o endereço de início).
+
+2. CALCULAR O TAMANHO EM BYTES: 
+   * Se o gráfico for 4 BPP: Multiplique (Largura x Altura) e divida por 2.
+     -> Conta: 64 x 16 = 1024 / 2 = 512 bytes.
+     -> Em formato Hexadecimal, 512 bytes equivalem a 200 de tamanho.
+   * Se o gráfico for 15 BPP: Multiplique (Largura x Altura) e multiplique por 2.
+
+3. No Memory Editor do emulador, navegue até ao endereço inicial calculado (ex: 05C669A0).
+4. Segure a tecla Shift e utilize as setas de direção para baixo para selecionar o 
+   bloco de memória até ao endereço final (Endereço inicial + tamanho em hex. 
+   No exemplo do tutorial: de 5C669A0 até 5C66BA0).
+5. Clique em "Save Selected" e guarde o ficheiro como "GraficoDump.bin" na pasta \Dumps\.
+
+--------------------------------------------------------------------------------
+🛠️ PASSO 5: VISUALIZAR NO CRYSTAL TILE 2
+--------------------------------------------------------------------------------
+1. Abra o Crystal Tile 2 e carregue o seu ficheiro "GraficoDump.bin".
+2. Pressione a tecla F6 para ativar o modo de visualização gráfica (Tile Viewer).
+3. No painel de propriedades do lado direito/inferior, ajuste:
+   * Width (Largura): 64
+   * Height (Altura): 16
+   * Tile Format: Escolha a opção correspondente ao seu BPP (Para 4bpp, use N64/MD 4bpp).
+   -> A imagem aparecerá com a forma correta, mas com cores totalmente erradas.
+4. Clique no separador "Palette" (ao lado de Properties), clique em "Import" e 
+   selecione um dos primeiros ficheiros .pal extraídos pelo CRAM2PAL até encontrar 
+   o que aplica as cores reais do jogo.
+
+--------------------------------------------------------------------------------
+🔍 PASSO 6: LOCALIZAR O FICHEIRO ALVO DENTRO DA ISO
+--------------------------------------------------------------------------------
+1. Feche o Crystal Tile 2. Abra o seu ficheiro "GraficoDump.bin" num editor hexadecimal (ex: wxMEdit ou HxD).
+2. Selecione e copie uma linha inteira de dados em texto hexadecimal (uma sequência 
+   de bytes) que pareça única e represente o início do gráfico.
+3. Abra a Linha de Comandos (CMD) do Windows dentro da pasta onde extraiu a ISO 
+   (\Vanilla Files\) e execute a ferramenta ByteSearch com a sequência copiada:
+   -> Comando: byte_search.exe --quick COLOQUE_AQUI_A_SEQUENCIA_HEX
+4. A ferramenta fará a busca em todos os ficheiros do jogo e devolverá exatamente 
+   o nome do ficheiro e o offset onde o gráfico está armazenado no disco.
+   -> Exemplo do tutorial: Encontrado no ficheiro "TITCHR.BIN" no offset 56A60.
+   
+   SE DER ERRO, FAZER PATCH POR Action Replay Codes
+
+--------------------------------------------------------------------------------
+✏️ PASSO 7: EDITAR E SUBSTITUIR O GRÁFICO
+--------------------------------------------------------------------------------
+1. No Crystal Tile 2, abra o ficheiro original do jogo localizado em \Vanilla Files\ 
+   que a busca encontrou (ex: TITCHR.BIN).
+2. Configure as mesmas dimensões e formato gráfico (Passo 5) e navegue até ao 
+   offset indicado. (Se necessário, subtraia a diferença caso não tenha copiado 
+   os bytes desde o início exato no Passo 6. Ex: 56A60 - C0 = 569A0).
+3. No separador de Paletas, exporte a paleta de cores como um ficheiro .act 
+   (formato de tabela de cores do Photoshop).
+4. Copie o bloco do gráfico no Crystal Tile 2 (Ctrl + C) e cole-o no seu editor 
+   de imagem (Photoshop/GIMP).
+5. Carregue o ficheiro .act no editor de imagem para que trabalhe com as cores exatas.
+6. Faça a alteração visual que desejar (redesenhar, traduzir texto, etc.).
+7. Quando terminar, junte todas as camadas (Flatten Image / Achatar Imagem), 
+   selecione tudo, copie (Ctrl + C), volte ao Crystal Tile 2, posicione o cursor 
+   sobre o gráfico original e cole (Ctrl + V).
+8. Pressione Enter para confirmar a alteração no Crystal Tile 2.
+9. Clique em File -> Save As e guarde este ficheiro modificado exatamente com o 
+   MESMO NOME e na mesma estrutura de subpastas dentro da pasta \Edited Files\.
+
+--------------------------------------------------------------------------------
+📀 PASSO 8: CONSTRUIR A ISO MODIFICADA
+--------------------------------------------------------------------------------
+1. Abra novamente o Sega Saturn Patcher (SSP) e carregue o jogo original da pasta \Vanilla ISO\.
+2. Clique no botão "Create New Patch" na parte inferior.
+3. Arraste e solte o ficheiro que você editou (que está dentro de \Edited Files\) 
+   para dentro da lista de ficheiros modificados do Patcher.
+4. Clique em "Create Patch" para gerar um ficheiro de patch com a extensão .ssp.
+5. Clique no botão "+Game Patch (SSP)" no menu principal do Patcher e selecione 
+   o ficheiro .ssp que acabou de criar.
+6. Por fim, clique no botão "Build Image" para compilar o jogo modificado e 
+   guarde a nova ISO na pasta \Edited ISO\.
+
+Pronto! Agora basta carregar esta nova ISO no seu emulador ou gravar num disco 
+para ver as suas novas texturas personalizadas a funcionar no Sega Saturn.
+================================================================================

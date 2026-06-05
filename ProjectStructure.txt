@@ -1,0 +1,16 @@
+https://www.segasaturnshiro.com/2022/08/16/malenkos-game-patching-guide-vol-1/
+https://segaxtreme.net/threads/lets-replace-sega-saturn-graphics.25295/
+
+Project Structure:
+
+dump/pal; dump/crystaltile2
+
+dump: files saved from Memory Editor
+
+Edited: edited files
+
+Extracted/byte_search.exe
+
+Extracted: Vanilla Files
+
+patch: patch files

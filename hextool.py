@@ -2,113 +2,112 @@ import os
 import subprocess
 import sys
 
-def somar_hexadecimal():
-    print("\n--- SOMAR HEXADECIMAIS ---")
-    hex1 = input("Digite o primeiro valor Hex (ex: 30): ").strip()
-    hex2 = input("Digite o segundo valor Hex (ex: 1B0): ").strip()
+def sum_hexadecimal():
+    print("\n--- SUM HEXADECIMAL VALUES ---")
+    hex1 = input("Enter the first Hex value (e.g., 30): ").strip()
+    hex2 = input("Enter the second Hex value (e.g., 1B0): ").strip()
     
     try:
         num1 = int(hex1, 16)
         num2 = int(hex2, 16)
-        resultado_decimal = num1 + num2
-        resultado_hex = hex(resultado_decimal).split('x')[1].upper()
+        result_decimal = num1 + num2
+        result_hex = hex(result_decimal).split('x')[1].upper()
         
-        print(f"\nResultado em Decimal: {resultado_decimal}")
-        print(f"Resultado em Hexadecimal: 0x{resultado_hex}")
+        print(f"\nResult in Decimal: {result_decimal}")
+        print(f"Result in Hexadecimal: 0x{result_hex}")
     except ValueError:
-        print("\n[ERRO] Valores hexadecimais inválidos (use 0-9, A-F).")
+        print("\n[ERROR] Invalid hexadecimal values (use 0-9, A-F).")
 
-def decimal_para_hexadecimal():
-    print("\n--- CONVERTER DECIMAL PARA HEX ---")
-    decimal_str = input("Digite o número decimal (ex: 1871): ").strip()
+def decimal_to_hexadecimal():
+    print("\n--- CONVERT DECIMAL TO HEX ---")
+    decimal_str = input("Enter the decimal number (e.g., 1871): ").strip()
     
     try:
         num_decimal = int(decimal_str)
-        resultado_hex = hex(num_decimal).split('x')[1].upper()
-        print(f"\nO número {num_decimal} em Hexadecimal é: 0x{resultado_hex}")
+        result_hex = hex(num_decimal).split('x')[1].upper()
+        print(f"\nThe number {num_decimal} in Hexadecimal is: 0x{result_hex}")
     except ValueError:
-        print("\n[ERRO] Número decimal inválido.")
+        print("\n[ERROR] Invalid decimal number.")
 
-def calcular_tamanho_bytes():
-    print("\n--- CALCULAR TAMANHO EM BYTES ---")
+def calculate_byte_size():
+    print("\n--- CALCULATE SIZE IN BYTES ---")
     try:
-        largura = int(input("Digite a LARGURA do gráfico (em pixels): ").strip())
-        altura = int(input("Digite a ALTURA do gráfico (em pixels): ").strip())
+        width = int(input("Enter the graphic WIDTH (in pixels): ").strip())
+        height = int(input("Enter the graphic HEIGHT (in pixels): ").strip())
         
-        print("\nEscolha o formato de cor (BPP):")
-        print("1. 4 BPP (16 cores - Comum em Sprites/Botões)")
-        print("2. 15 BPP (High Color - Comum em Fundos/Telas)")
-        bpp_opcao = input("Escolha a opção (1-2): ").strip()
+        print("\nChoose color format (BPP):")
+        print("1. 4 BPP (16 colors - Common in Sprites/Buttons)")
+        print("2. 15 BPP (High Color - Common in Backgrounds/Screens)")
+        bpp_option = input("Choose option (1-2): ").strip()
         
-        pixels_totais = largura * altura
+        total_pixels = width * height
         
-        if bpp_opcao == "1":
-            tamanho_bytes = pixels_totais // 2
-            bpp_nome = "4 BPP"
-        elif bpp_opcao == "2":
-            tamanho_bytes = pixels_totais * 2
-            bpp_nome = "15 BPP"
+        if bpp_option == "1":
+            size_bytes = total_pixels // 2
+            bpp_name = "4 BPP"
+        elif bpp_option == "2":
+            size_bytes = total_pixels * 2
+            bpp_name = "15 BPP"
         else:
-            print("\n[ERRO] Opção de BPP inválida!")
+            print("\n[ERROR] Invalid BPP option!")
             return
 
-        tamanho_hex = hex(tamanho_bytes).split('x')[1].upper()
+        size_hex = hex(size_bytes).split('x')[1].upper()
         
         print(f"\n=" + "-"*35)
-        print(f" RESULTADO PARA: {largura}x{altura} ({bpp_nome})")
+        print(f" RESULT FOR: {width}x{height} ({bpp_name})")
         print(f"=" + "-"*35)
-        print(f"Total de Pixels: {pixels_totais} px")
-        print(f"Tamanho em Decimal: {tamanho_bytes} bytes")
-        print(f"Tamanho em Hexadecimal: 0x{tamanho_hex}")
+        print(f"Total Pixels: {total_pixels} px")
+        print(f"Size in Decimal: {size_bytes} bytes")
+        print(f"Size in Hexadecimal: 0x{size_hex}")
         print("-" * 37)
 
     except ValueError:
-        print("\n[ERRO] Por favor, digite apenas números inteiros para largura e altura.")
+        print("\n[ERROR] Please enter only integers for width and height.")
 
-def chamar_script_individual():
-    script_externo = "hextool_scannerLines.py"  # Nome do seu arquivo individual mais rápido
+def call_individual_script():
+    external_script = "hextool_scannerLines.py"
     
-    if not os.path.exists(script_externo):
-        print(f"\n[ERRO]: O arquivo '{script_externo}' não foi encontrado nesta pasta!")
+    if not os.path.exists(external_script):
+        print(f"\n[ERROR]: The file '{external_script}' was not found in this folder!")
         return
         
-    print(f"\n[INFO]: Iniciando o '{script_externo}' externo de forma direta...")
+    print(f"\n[INFO]: Starting the external script '{external_script}' directly...")
     print("-" * 40)
     
     try:
-        # Usa o mesmo interpretador Python atual (sys.executable) para rodar o script rápido
-        # de forma limpa e isolada do menu atual
-        subprocess.run([sys.executable, script_externo])
+        # Uses the current Python interpreter to run the script cleanly
+        subprocess.run([sys.executable, external_script])
     except Exception as e:
-        print(f"\n[ERRO] Falha ao executar o script externo: {e}")
+        print(f"\n[ERROR] Failed to execute the external script: {e}")
 
 def menu():
     while True:
         print("\n" + "="*40)
-        print("       CALCULADORA & SCANNER ROMHACKING     ")
+        print("     CALCULATOR & ROMHACKING SCANNER    ")
         print("="*40)
-        print("1. Somar dois valores Hexadecimais")
-        print("2. Converter Decimal para Hexadecimal")
-        print("3. Calcular Tamanho em Bytes (4 BPP / 15 BPP)")
-        print("4. Executar Varredura Rápida (Chama Script Separado)")
-        print("5. Sair")
+        print("1. Sum two Hexadecimal values")
+        print("2. Convert Decimal to Hexadecimal")
+        print("3. Calculate Size in Bytes (4 BPP / 15 BPP)")
+        print("4. Run Quick Scan (Call external script)")
+        print("5. Exit")
         print("-" * 40)
         
-        opcao = input("Escolha uma opção (1-5): ").strip()
+        option = input("Choose an option (1-5): ").strip()
         
-        if opcao == "1":
-            somar_hexadecimal()
-        elif opcao == "2":
-            decimal_para_hexadecimal()
-        elif opcao == "3":
-            calcular_tamanho_bytes()
-        elif opcao == "4":
-            chamar_script_individual()
-        elif opcao == "5":
-            print("\nA fechar o programa. Boa sorte com a tradução!")
+        if option == "1":
+            sum_hexadecimal()
+        elif option == "2":
+            decimal_to_hexadecimal()
+        elif option == "3":
+            calculate_byte_size()
+        elif option == "4":
+            call_individual_script()
+        elif option == "5":
+            print("\nClosing the program. Good luck with the translation!")
             break
         else:
-            print("\nOpção inválida! Tente novamente.")
+            print("\nInvalid option! Try again.")
 
 if __name__ == "__main__":
     menu()

@@ -60,7 +60,7 @@ Consolas antigas não guardam cores nas imagens; utilizam uma tabela chamada pal
 1. Feche a janela do VDP1 e, no menu do emulador, abra: Debug -> Memory Editor.
 2. Clique no separador (tab) VDP2 CRAM.
 3. Clique no botão "Save Tab" abaixo e guarde o ficheiro com o nome 
-   "PaletaOriginalCRAM.bin" dentro da sua pasta \Dumps\.
+   "PaletaOriginalCRAM.bin" dentro da sua pasta \Dumps\pal\.
 4. No Windows, pegue neste ficheiro .bin gerado e arraste-o diretamente para cima 
    do executável do programa CRAM2PAL.exe.
 5. Uma janela rápida de comandos abrirá e fechará. O programa criará centenas de 
